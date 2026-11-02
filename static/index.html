@@ -2,88 +2,37 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0a0a0a" />
-  <title>TANUKI POLICY ARCADE</title>
-  <meta name="description" content="Rulease があなたの運命を 1 ミリ秒単位で裁定する、説明可能なポリシーゲーム。" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#090b10" />
+  <title>TANUKI / RULEASE CONTROL ROOM</title>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
-  <div class="noise" aria-hidden="true"></div>
+  <div class="noise"></div>
   <header class="topbar">
-    <a class="brand" href="#">TANUKI <span>POLICY</span> ARCADE</a>
-    <div class="status"><i id="statusDot"></i><span id="statusText">connecting…</span></div>
+    <div class="brand"><span class="brand-mark">狸</span><div><strong>TANUKI / RULEASE</strong><span>CONTROL ROOM</span></div></div>
+    <div class="statusline"><span id="modeBadge" class="badge">BOOTING</span><span id="versionBadge" class="badge ghost">engine —</span></div>
   </header>
-
-  <main>
-    <section class="hero">
-      <p class="eyebrow">EXPLAINABLE DECISION MACHINE / RULEASE POWERED</p>
-      <h1>あなたの運命、<br><em>ルールで決めます。</em></h1>
-      <p class="lead">年齢、信頼、混沌、買い物額。つまみを動かして「判定」。Rulease が ALLOW / DENY と理由を返す。</p>
-      <div class="hero-meta">
-        <span>NO AI GUESSING</span><span>DETERMINISTIC</span><span>AUDITABLE</span>
-      </div>
+  <main class="shell">
+    <section class="hero"><div><p class="eyebrow">POLICY DECISION PLAYGROUND</p><h1>ルールを、<em>実際に壊して</em><br>挙動を観測する。</h1><p class="lead">Rulease v2 の preview / lint / semantic diff / trace を、全部ブラウザから叩ける政策実験室。Remote Rulease があれば production decision まで接続する。</p></div><div class="hero-meter"><div class="meter-ring"><span id="heroResult">READY</span></div><small>LAST DECISION</small></div></section>
+    <nav class="tabs"><button class="tab active" data-target="arena">01 DECISION ARENA</button><button class="tab" data-target="lab">02 POLICY LAB</button><button class="tab" data-target="control">03 CONTROL PLANE</button></nav>
+    <section id="arena" class="panel active-panel">
+      <div class="panel-head"><div><span class="kicker">LIVE DECISION</span><h2>Decision Arena</h2></div><select id="arenaRule" class="select"></select></div>
+      <div class="arena-grid"><div class="controls card">
+        <div class="control"><label>AGE <output id="ageOut">24</output></label><input id="age" type="range" min="0" max="100" value="24"></div>
+        <div class="control"><label>TRUST <output id="trustOut">78</output></label><input id="trust" type="range" min="0" max="100" value="78"></div>
+        <div class="control"><label>CHAOS <output id="chaosOut">30</output></label><input id="chaos" type="range" min="0" max="100" value="30"></div>
+        <div class="control"><label>RISK <output id="riskOut">25</output></label><input id="risk" type="range" min="0" max="100" value="25"></div>
+        <div class="control"><label>CART TOTAL <output id="cartOut">8000</output></label><input id="cart_total" type="range" min="0" max="30000" step="500" value="8000"></div>
+        <div class="control"><label>LOYALTY <output id="loyaltyOut">4</output></label><input id="loyalty" type="range" min="0" max="10" value="4"></div>
+        <div class="toggles"><label><input id="banned" type="checkbox"><span>BANNED</span></label><label><input id="night_owl" type="checkbox" checked><span>NIGHT OWL</span></label><label><input id="beta_tester" type="checkbox"><span>BETA TESTER</span></label></div>
+        <button id="judgeBtn" class="primary">RUN DECISION →</button>
+      </div><div class="result card"><div class="result-top"><span class="kicker">RULEASE OUTPUT</span><span id="sourcePill" class="badge ghost">—</span></div><div id="decisionResult" class="decision-word">READY</div><p id="decisionReason" class="reason">パラメータを動かして判定してください。</p><dl class="meta-grid"><div><dt>RULE</dt><dd id="metaRule">—</dd></div><div><dt>DURATION</dt><dd id="metaDuration">—</dd></div><div><dt>REVISION</dt><dd id="metaRevision">—</dd></div><div><dt>DECISION ID</dt><dd id="metaId">—</dd></div></dl><div class="trace-box"><div class="trace-head"><span>TRACE / CHILD DECISIONS</span><button id="copyTrace">COPY</button></div><pre id="traceOutput">[]</pre></div></div></div>
     </section>
-
-    <section class="machine" aria-label="Rulease decision terminal">
-      <div class="panel controls">
-        <div class="panel-head">
-          <div><small>01</small><h2>CASE INPUT</h2></div>
-          <button id="randomize" class="ghost" type="button">🎲 適当に盛る</button>
-        </div>
-
-        <div class="scenario-tabs" id="scenarioTabs">
-          <button class="scenario active" data-rule="arcade.vip_gate" type="button"><b>VIPゲート</b><span>入れる？</span></button>
-          <button class="scenario" data-rule="arcade.coupon_drop" type="button"><b>幻のクーポン</b><span>もらえる？</span></button>
-          <button class="scenario" data-rule="arcade.midnight_license" type="button"><b>深夜活動許可証</b><span>夜更かしOK？</span></button>
-        </div>
-
-        <div class="sliders">
-          <label><span>AGE <output id="ageOut">24</output></span><input id="age" type="range" min="0" max="80" value="24"></label>
-          <label><span>TRUST <output id="trustOut">72</output></span><input id="trust" type="range" min="0" max="100" value="72"></label>
-          <label><span>CHAOS <output id="chaosOut">42</output></span><input id="chaos" type="range" min="0" max="100" value="42"></label>
-          <label><span>CART ¥ <output id="cart_totalOut">7200</output></span><input id="cart_total" type="range" min="0" max="20000" step="100" value="7200"></label>
-          <label><span>LOYALTY <output id="loyaltyOut">4</output>/10</span><input id="loyalty" type="range" min="0" max="10" value="4"></label>
-          <label><span>RISK <output id="riskOut">23</output></span><input id="risk" type="range" min="0" max="100" value="23"></label>
-        </div>
-
-        <div class="toggles">
-          <label><input id="night_owl" type="checkbox" checked><span></span>夜型人間</label>
-          <label><input id="banned" type="checkbox"><span></span>BAN歴あり</label>
-        </div>
-
-        <button id="decide" class="decide" type="button"><span>判定を下す</span><b>EXECUTE →</b></button>
-      </div>
-
-      <div class="panel verdict-panel">
-        <div class="panel-head"><div><small>02</small><h2>VERDICT</h2></div><span class="id" id="decisionId">NO DECISION</span></div>
-        <div class="verdict idle" id="verdict">
-          <div class="stamp" id="stamp">READY</div>
-          <p id="reason">左のパラメータをいじって、Rulease に判定させてください。</p>
-        </div>
-        <div class="telemetry">
-          <div><small>ENGINE</small><strong id="engine">—</strong></div>
-          <div><small>REVISION</small><strong id="revision">—</strong></div>
-          <div><small>LATENCY</small><strong id="latency">—</strong></div>
-        </div>
-        <div class="trace-box">
-          <div class="trace-head"><span>DECISION TRACE</span><span id="traceCount">0 checks</span></div>
-          <div id="trace" class="trace-empty">判定後、評価結果がここに出ます。</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="explain">
-      <div><p class="eyebrow">WHAT IS HAPPENING?</p><h2>これは占いではなく、<br>ちゃんとしたルールエンジン。</h2></div>
-      <div class="steps">
-        <article><b>1</b><h3>Facts</h3><p>画面の値を JSON の context にする。</p></article>
-        <article><b>2</b><h3>Rulease</h3><p>公開済みの immutable revision で判定する。</p></article>
-        <article><b>3</b><h3>Explain</h3><p>結果、理由、revision、decision ID を返す。</p></article>
-      </div>
-    </section>
+    <section id="lab" class="panel"><div class="panel-head"><div><span class="kicker">EMBEDDED RULEASE V2</span><h2>Policy Lab</h2></div><div class="lab-actions"><button id="resetPolicy" class="secondary">RESET</button><button id="lintBtn" class="secondary">LINT</button><button id="diffBtn" class="secondary">DIFF</button><button id="previewBtn" class="primary small">PREVIEW</button></div></div><div class="lab-grid"><div class="editor card"><div class="editor-bar"><span>policy/arcade.rulea</span><select id="labRule" class="select compact"></select></div><textarea id="policyEditor" spellcheck="false"></textarea></div><div class="lab-side"><div class="card context-card"><div class="editor-bar"><span>CONTEXT.JSON</span><button id="syncContext">FROM ARENA</button></div><textarea id="contextEditor" spellcheck="false"></textarea></div><div class="card diagnostics"><div class="editor-bar"><span>DIAGNOSTICS</span><span id="diagCount">0</span></div><div id="diagnosticsOutput" class="diagnostic-list"><p class="muted">Lint / Diff / Preview の結果がここに出ます。</p></div></div></div></div><div class="matrix card"><div><span class="kicker">SCENARIO MATRIX</span><h3>同じルールを極端な入力で連続テスト</h3></div><button id="matrixBtn" class="secondary">RUN MATRIX</button><div id="matrixOutput" class="matrix-grid"></div></div></section>
+    <section id="control" class="panel"><div class="panel-head"><div><span class="kicker">RULEASE PLATFORM</span><h2>Control Plane</h2></div><button id="refreshControl" class="secondary">REFRESH</button></div><div class="control-grid"><article class="card status-card"><span class="kicker">EMBEDDED</span><h3>Rulease Service Layer</h3><p>このVercel Function内で Rulease の <code>preview()</code> を直接実行。編集したポリシーをDBなしで即評価する。</p><dl class="stack-meta"><div><dt>RULEASE</dt><dd id="cpRulease">—</dd></div><div><dt>RULEA ENGINE</dt><dd id="cpEngine">—</dd></div><div><dt>TOOLS</dt><dd>preview · lint · diff · tests</dd></div></dl></article><article class="card status-card"><span class="kicker">REMOTE</span><h3>Production Rulease</h3><p id="remoteMessage">接続状態を確認中…</p><div class="health-row"><span>LIVE <b id="liveDot" class="dot"></b></span><span>READY <b id="readyDot" class="dot"></b></span><span>KEY <b id="keyDot" class="dot"></b></span></div><pre id="controlOutput">{}</pre></article></div><div class="lifecycle"><div><span>01</span><strong>DRAFT</strong><small>自由に編集</small></div><i>→</i><div><span>02</span><strong>REVISION</strong><small>不変スナップショット</small></div><i>→</i><div><span>03</span><strong>DEPLOYMENT</strong><small>承認対象</small></div><i>→</i><div><span>04</span><strong>RELEASE</strong><small>本番判定</small></div></div></section>
   </main>
-
-  <footer><span>Built to make policy engines unnecessarily dramatic.</span><a href="https://github.com/tanuki276/ruleas">RULEASE ↗</a></footer>
-  <script src="/static/app.js" defer></script>
+  <footer><span>Powered by tanuki276/ruleas + tanuki276/rulea</span><span>POLICY SHOULD BE VISIBLE, TESTABLE, REVERSIBLE.</span></footer>
+  <script src="/static/app.js"></script>
 </body>
 </html>
