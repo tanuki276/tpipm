@@ -1,4 +1,4 @@
-version 1
+version 2
 namespace arcade
 
 schema:
@@ -10,21 +10,58 @@ schema:
     risk: int
     banned: bool
     night_owl: bool
+    beta_tester: bool
 
-rule vip_gate:
-    when: age >= 20 and trust >= 70 and not banned
-    reason: "20歳以上・信頼度70以上・BANされていない者のみVIPへ"
-    description: "VIPゲートの入場判定"
-    tags: arcade, vip
+rule hard_ban:
+    when: banned
+    effect: DENY
+    reason: "BANフラグがあるため即時拒否"
+    priority: 100
+    tags: safety, deny
 
-rule coupon_drop:
-    when: cart_total >= 5000 and loyalty >= 3 and risk < 60
-    reason: "5,000円以上・常連度3以上・リスク60未満なら幻のクーポン解禁"
-    description: "クーポン配布判定"
-    tags: arcade, commerce
+rule adult:
+    when: age >= 18
+    reason: "18歳以上"
+    tags: identity
 
-rule midnight_license:
-    when: age >= 18 and night_owl and chaos <= 80 and not banned
-    reason: "18歳以上・夜型・混沌度80以下・BANなしなら深夜活動を許可"
-    description: "深夜活動許可証の発行判定"
-    tags: arcade, night
+rule trusted:
+    when: trust >= 65 and risk < 70
+    reason: "信頼度65以上かつリスク70未満"
+    tags: trust
+
+rule beta_pass:
+    when: beta_tester and trust >= 40
+    reason: "βテスター特例"
+    tags: beta
+
+rule general_entry:
+    when: matches("adult") and matches("trusted")
+    reason: "通常入場条件を満たした"
+    priority: 20
+    tags: entry
+
+rule beta_entry:
+    when: matches("beta_pass") and age >= 16
+    reason: "βテスター先行入場"
+    priority: 10
+    tags: entry, beta
+
+ruleset entry:
+    rules: hard_ban, general_entry, beta_entry
+    strategy: deny_overrides
+    default: DENY
+
+rule vip:
+    when: age >= 20 and trust >= 80 and loyalty >= 4 and risk < 45 and not banned
+    reason: "VIP条件: 20歳以上・信頼80+・常連4+・低リスク"
+    tags: vip, loyalty
+
+rule coupon:
+    when: cart_total >= 5000 and loyalty >= 3 and risk < 60 and not banned
+    reason: "5,000円以上・常連3+・リスク60未満でクーポン解禁"
+    tags: commerce, coupon
+
+rule midnight:
+    when: age >= 18 and night_owl and chaos <= 80 and trust >= 55 and not banned
+    reason: "夜型・混沌度80以下・信頼55+で深夜活動を許可"
+    tags: night, access
