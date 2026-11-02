@@ -1,3 +1,5 @@
-fastapi>=0.115,<1
+fastapi>=0.121.1,<1
 httpx>=0.27,<1
-uvicorn[standard]>=0.30,<1
+uvicorn>=0.30,<1
+rulea @ git+https://github.com/tanuki276/rulea.git@de42d39fd45a7e5caed05367094b54aa469c1c99
+ruleas @ git+https://github.com/tanuki276/ruleas.git@c50319fc2e65cd29a672408fd30b0db95d145a78
