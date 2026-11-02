@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>TANUKI POLICY ARCADE</title>
+  <meta name="description" content="Rulease があなたの運命を 1 ミリ秒単位で裁定する、説明可能なポリシーゲーム。" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#">TANUKI <span>POLICY</span> ARCADE</a>
+    <div class="status"><i id="statusDot"></i><span id="statusText">connecting…</span></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">EXPLAINABLE DECISION MACHINE / RULEASE POWERED</p>
+      <h1>あなたの運命、<br><em>ルールで決めます。</em></h1>
+      <p class="lead">年齢、信頼、混沌、買い物額。つまみを動かして「判定」。Rulease が ALLOW / DENY と理由を返す。</p>
+      <div class="hero-meta">
+        <span>NO AI GUESSING</span><span>DETERMINISTIC</span><span>AUDITABLE</span>
+      </div>
+    </section>
+
+    <section class="machine" aria-label="Rulease decision terminal">
+      <div class="panel controls">
+        <div class="panel-head">
+          <div><small>01</small><h2>CASE INPUT</h2></div>
+          <button id="randomize" class="ghost" type="button">🎲 適当に盛る</button>
+        </div>
+
+        <div class="scenario-tabs" id="scenarioTabs">
+          <button class="scenario active" data-rule="arcade.vip_gate" type="button"><b>VIPゲート</b><span>入れる？</span></button>
+          <button class="scenario" data-rule="arcade.coupon_drop" type="button"><b>幻のクーポン</b><span>もらえる？</span></button>
+          <button class="scenario" data-rule="arcade.midnight_license" type="button"><b>深夜活動許可証</b><span>夜更かしOK？</span></button>
+        </div>
+
+        <div class="sliders">
+          <label><span>AGE <output id="ageOut">24</output></span><input id="age" type="range" min="0" max="80" value="24"></label>
+          <label><span>TRUST <output id="trustOut">72</output></span><input id="trust" type="range" min="0" max="100" value="72"></label>
+          <label><span>CHAOS <output id="chaosOut">42</output></span><input id="chaos" type="range" min="0" max="100" value="42"></label>
+          <label><span>CART ¥ <output id="cart_totalOut">7200</output></span><input id="cart_total" type="range" min="0" max="20000" step="100" value="7200"></label>
+          <label><span>LOYALTY <output id="loyaltyOut">4</output>/10</span><input id="loyalty" type="range" min="0" max="10" value="4"></label>
+          <label><span>RISK <output id="riskOut">23</output></span><input id="risk" type="range" min="0" max="100" value="23"></label>
+        </div>
+
+        <div class="toggles">
+          <label><input id="night_owl" type="checkbox" checked><span></span>夜型人間</label>
+          <label><input id="banned" type="checkbox"><span></span>BAN歴あり</label>
+        </div>
+
+        <button id="decide" class="decide" type="button"><span>判定を下す</span><b>EXECUTE →</b></button>
+      </div>
+
+      <div class="panel verdict-panel">
+        <div class="panel-head"><div><small>02</small><h2>VERDICT</h2></div><span class="id" id="decisionId">NO DECISION</span></div>
+        <div class="verdict idle" id="verdict">
+          <div class="stamp" id="stamp">READY</div>
+          <p id="reason">左のパラメータをいじって、Rulease に判定させてください。</p>
+        </div>
+        <div class="telemetry">
+          <div><small>ENGINE</small><strong id="engine">—</strong></div>
+          <div><small>REVISION</small><strong id="revision">—</strong></div>
+          <div><small>LATENCY</small><strong id="latency">—</strong></div>
+        </div>
+        <div class="trace-box">
+          <div class="trace-head"><span>DECISION TRACE</span><span id="traceCount">0 checks</span></div>
+          <div id="trace" class="trace-empty">判定後、評価結果がここに出ます。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="explain">
+      <div><p class="eyebrow">WHAT IS HAPPENING?</p><h2>これは占いではなく、<br>ちゃんとしたルールエンジン。</h2></div>
+      <div class="steps">
+        <article><b>1</b><h3>Facts</h3><p>画面の値を JSON の context にする。</p></article>
+        <article><b>2</b><h3>Rulease</h3><p>公開済みの immutable revision で判定する。</p></article>
+        <article><b>3</b><h3>Explain</h3><p>結果、理由、revision、decision ID を返す。</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Built to make policy engines unnecessarily dramatic.</span><a href="https://github.com/tanuki276/ruleas">RULEASE ↗</a></footer>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

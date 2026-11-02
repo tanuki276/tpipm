@@ -1,0 +1,30 @@
+version 1
+namespace arcade
+
+schema:
+    age: int
+    trust: int
+    chaos: int
+    cart_total: int
+    loyalty: int
+    risk: int
+    banned: bool
+    night_owl: bool
+
+rule vip_gate:
+    when: age >= 20 and trust >= 70 and not banned
+    reason: "20歳以上・信頼度70以上・BANされていない者のみVIPへ"
+    description: "VIPゲートの入場判定"
+    tags: arcade, vip
+
+rule coupon_drop:
+    when: cart_total >= 5000 and loyalty >= 3 and risk < 60
+    reason: "5,000円以上・常連度3以上・リスク60未満なら幻のクーポン解禁"
+    description: "クーポン配布判定"
+    tags: arcade, commerce
+
+rule midnight_license:
+    when: age >= 18 and night_owl and chaos <= 80 and not banned
+    reason: "18歳以上・夜型・混沌度80以下・BANなしなら深夜活動を許可"
+    description: "深夜活動許可証の発行判定"
+    tags: arcade, night
