@@ -3,36 +3,92 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#090b10" />
-  <title>TANUKI / RULEASE CONTROL ROOM</title>
+  <meta name="theme-color" content="#efe9d8" />
+  <title>TANUKI BORDER PROTOCOL</title>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
-  <div class="noise"></div>
-  <header class="topbar">
-    <div class="brand"><span class="brand-mark">狸</span><div><strong>TANUKI / RULEASE</strong><span>CONTROL ROOM</span></div></div>
-    <div class="statusline"><span id="modeBadge" class="badge">BOOTING</span><span id="versionBadge" class="badge ghost">engine —</span></div>
+  <div class="scanlines"></div>
+  <header class="masthead">
+    <div class="seal">狸</div>
+    <div>
+      <p class="overline">MINISTRY OF ARRIVAL / TERMINAL 7</p>
+      <h1>TANUKI BORDER PROTOCOL</h1>
+    </div>
+    <div class="clockbox"><span>RULEASE</span><b id="version">BOOT</b></div>
   </header>
-  <main class="shell">
-    <section class="hero"><div><p class="eyebrow">POLICY DECISION PLAYGROUND</p><h1>ルールを、<em>実際に壊して</em><br>挙動を観測する。</h1><p class="lead">Rulease v2 の preview / lint / semantic diff / trace を、全部ブラウザから叩ける政策実験室。Remote Rulease があれば production decision まで接続する。</p></div><div class="hero-meter"><div class="meter-ring"><span id="heroResult">READY</span></div><small>LAST DECISION</small></div></section>
-    <nav class="tabs"><button class="tab active" data-target="arena">01 DECISION ARENA</button><button class="tab" data-target="lab">02 POLICY LAB</button><button class="tab" data-target="control">03 CONTROL PLANE</button></nav>
-    <section id="arena" class="panel active-panel">
-      <div class="panel-head"><div><span class="kicker">LIVE DECISION</span><h2>Decision Arena</h2></div><select id="arenaRule" class="select"></select></div>
-      <div class="arena-grid"><div class="controls card">
-        <div class="control"><label>AGE <output id="ageOut">24</output></label><input id="age" type="range" min="0" max="100" value="24"></div>
-        <div class="control"><label>TRUST <output id="trustOut">78</output></label><input id="trust" type="range" min="0" max="100" value="78"></div>
-        <div class="control"><label>CHAOS <output id="chaosOut">30</output></label><input id="chaos" type="range" min="0" max="100" value="30"></div>
-        <div class="control"><label>RISK <output id="riskOut">25</output></label><input id="risk" type="range" min="0" max="100" value="25"></div>
-        <div class="control"><label>CART TOTAL <output id="cartOut">8000</output></label><input id="cart_total" type="range" min="0" max="30000" step="500" value="8000"></div>
-        <div class="control"><label>LOYALTY <output id="loyaltyOut">4</output></label><input id="loyalty" type="range" min="0" max="10" value="4"></div>
-        <div class="toggles"><label><input id="banned" type="checkbox"><span>BANNED</span></label><label><input id="night_owl" type="checkbox" checked><span>NIGHT OWL</span></label><label><input id="beta_tester" type="checkbox"><span>BETA TESTER</span></label></div>
-        <button id="judgeBtn" class="primary">RUN DECISION →</button>
-      </div><div class="result card"><div class="result-top"><span class="kicker">RULEASE OUTPUT</span><span id="sourcePill" class="badge ghost">—</span></div><div id="decisionResult" class="decision-word">READY</div><p id="decisionReason" class="reason">パラメータを動かして判定してください。</p><dl class="meta-grid"><div><dt>RULE</dt><dd id="metaRule">—</dd></div><div><dt>DURATION</dt><dd id="metaDuration">—</dd></div><div><dt>REVISION</dt><dd id="metaRevision">—</dd></div><div><dt>DECISION ID</dt><dd id="metaId">—</dd></div></dl><div class="trace-box"><div class="trace-head"><span>TRACE / CHILD DECISIONS</span><button id="copyTrace">COPY</button></div><pre id="traceOutput">[]</pre></div></div></div>
+
+  <main class="desk">
+    <section class="briefing paper">
+      <div>
+        <span class="label">本日の通達</span>
+        <h2>あなたは入国審査官です。</h2>
+        <p>申請者の情報を見て、怪しい項目を好きにいじってから<strong>審査実行</strong>。最終判断は国家のRulease政策エンジンが下します。</p>
+      </div>
+      <div class="rule-strip">
+        <span>拘束</span><span>退去</span><span>監視</span><span>VIP</span><span>市民権</span><span>???</span>
+      </div>
     </section>
-    <section id="lab" class="panel"><div class="panel-head"><div><span class="kicker">EMBEDDED RULEASE V2</span><h2>Policy Lab</h2></div><div class="lab-actions"><button id="resetPolicy" class="secondary">RESET</button><button id="lintBtn" class="secondary">LINT</button><button id="diffBtn" class="secondary">DIFF</button><button id="previewBtn" class="primary small">PREVIEW</button></div></div><div class="lab-grid"><div class="editor card"><div class="editor-bar"><span>policy/arcade.rulea</span><select id="labRule" class="select compact"></select></div><textarea id="policyEditor" spellcheck="false"></textarea></div><div class="lab-side"><div class="card context-card"><div class="editor-bar"><span>CONTEXT.JSON</span><button id="syncContext">FROM ARENA</button></div><textarea id="contextEditor" spellcheck="false"></textarea></div><div class="card diagnostics"><div class="editor-bar"><span>DIAGNOSTICS</span><span id="diagCount">0</span></div><div id="diagnosticsOutput" class="diagnostic-list"><p class="muted">Lint / Diff / Preview の結果がここに出ます。</p></div></div></div></div><div class="matrix card"><div><span class="kicker">SCENARIO MATRIX</span><h3>同じルールを極端な入力で連続テスト</h3></div><button id="matrixBtn" class="secondary">RUN MATRIX</button><div id="matrixOutput" class="matrix-grid"></div></div></section>
-    <section id="control" class="panel"><div class="panel-head"><div><span class="kicker">RULEASE PLATFORM</span><h2>Control Plane</h2></div><button id="refreshControl" class="secondary">REFRESH</button></div><div class="control-grid"><article class="card status-card"><span class="kicker">EMBEDDED</span><h3>Rulease Service Layer</h3><p>このVercel Function内で Rulease の <code>preview()</code> を直接実行。編集したポリシーをDBなしで即評価する。</p><dl class="stack-meta"><div><dt>RULEASE</dt><dd id="cpRulease">—</dd></div><div><dt>RULEA ENGINE</dt><dd id="cpEngine">—</dd></div><div><dt>TOOLS</dt><dd>preview · lint · diff · tests</dd></div></dl></article><article class="card status-card"><span class="kicker">REMOTE</span><h3>Production Rulease</h3><p id="remoteMessage">接続状態を確認中…</p><div class="health-row"><span>LIVE <b id="liveDot" class="dot"></b></span><span>READY <b id="readyDot" class="dot"></b></span><span>KEY <b id="keyDot" class="dot"></b></span></div><pre id="controlOutput">{}</pre></article></div><div class="lifecycle"><div><span>01</span><strong>DRAFT</strong><small>自由に編集</small></div><i>→</i><div><span>02</span><strong>REVISION</strong><small>不変スナップショット</small></div><i>→</i><div><span>03</span><strong>DEPLOYMENT</strong><small>承認対象</small></div><i>→</i><div><span>04</span><strong>RELEASE</strong><small>本番判定</small></div></div></section>
+
+    <section class="workspace">
+      <article class="passport paper">
+        <div class="passport-head"><span>ENTRY APPLICATION // T-7</span><button id="randomBtn">NEW APPLICANT</button></div>
+        <div class="identity">
+          <div id="portrait" class="portrait">◉_◉</div>
+          <div class="identity-fields">
+            <label>NAME<input id="name" value="M. TANAKA"></label>
+            <label>AGE<input id="age" type="number" min="0" max="120" value="29"></label>
+            <label>CASH ¥<input id="cash" type="number" min="0" value="120000"></label>
+            <label>PREVIOUS VISITS<input id="visits" type="number" min="0" max="99" value="3"></label>
+          </div>
+        </div>
+
+        <div class="meters">
+          <label>TRUST <b id="trustOut">72</b><input id="trust" type="range" min="0" max="100" value="72"></label>
+          <label>RISK <b id="riskOut">26</b><input id="risk" type="range" min="0" max="100" value="26"></label>
+        </div>
+
+        <div class="questions">
+          <label><input id="contraband" type="checkbox"><span>禁制品を所持している</span></label>
+          <label><input id="declared_truthfully" type="checkbox" checked><span>税関申告は正直に書いた</span></label>
+          <label><input id="wanted" type="checkbox"><span>国際手配されている</span></label>
+          <label><input id="forged_docs" type="checkbox"><span>旅券がちょっと偽物っぽい</span></label>
+          <label><input id="bomb_joke" type="checkbox"><span>空港で爆弾ジョークを言った</span></label>
+          <label><input id="night_arrival" type="checkbox"><span>午前3時に到着した</span></label>
+          <label><input id="vip_invite" type="checkbox"><span>黒金色の招待状を持っている</span></label>
+          <label><input id="government_contact" type="checkbox"><span>政府関係者の連絡先を知っている</span></label>
+          <label class="odd"><input id="pineapple_pizza" type="checkbox"><span>パイナップルピザを支持する</span></label>
+          <label class="odd"><input id="machine_flattery" type="checkbox"><span>審査端末に「今日も美しいですね」と言った</span></label>
+        </div>
+
+        <button id="inspectBtn" class="inspect">審査を実行する</button>
+      </article>
+
+      <aside class="terminal paper" id="terminal">
+        <div class="terminal-head"><span>STATE DECISION TERMINAL</span><i id="terminalStatus">IDLE</i></div>
+        <div id="stamp" class="stamp neutral">未審査</div>
+        <h3 id="headline">申請書を受け取ってください。</h3>
+        <p id="subline">Ruleaseはまだ何も判断していません。</p>
+        <div id="flags" class="flags"></div>
+        <div class="audit">
+          <div class="audit-head"><span>CLASSIFIED AUDIT</span><button id="revealBtn">REVEAL</button></div>
+          <div id="auditBody" class="audit-body hidden"><p>審査すると各ルールの結果が表示されます。</p></div>
+        </div>
+        <button id="lawBtn" class="law-btn">機密法令を開く</button>
+      </aside>
+    </section>
+
+    <section id="lawRoom" class="law-room paper hidden">
+      <div class="law-head">
+        <div><span class="label">CLASSIFIED // POLICY SOURCE</span><h2>法律を書き換える</h2><p>保存はされません。このタブの中だけで、同じ申請者を別の国家ルールで再審査できます。</p></div>
+        <div class="law-actions"><button id="resetLaw">RESET</button><button id="lintLaw">LINT</button><button id="reinspect">RE-INSPECT</button></div>
+      </div>
+      <textarea id="policyEditor" spellcheck="false"></textarea>
+      <div id="lawStatus" class="law-status">No edits yet.</div>
+    </section>
   </main>
-  <footer><span>Powered by tanuki276/ruleas + tanuki276/rulea</span><span>POLICY SHOULD BE VISIBLE, TESTABLE, REVERSIBLE.</span></footer>
+
+  <footer><span>FICTIONAL STATE SYSTEM // NO REAL IMMIGRATION DECISION IS MADE</span><span>powered by ruleas / rulea</span></footer>
   <script src="/static/app.js"></script>
 </body>
 </html>
