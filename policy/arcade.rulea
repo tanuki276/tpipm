@@ -1,67 +1,69 @@
 version 2
-namespace arcade
+namespace border
 
 schema:
     age: int
+    cash: int
+    visits: int
     trust: int
-    chaos: int
-    cart_total: int
-    loyalty: int
     risk: int
-    banned: bool
-    night_owl: bool
-    beta_tester: bool
+    contraband: bool
+    wanted: bool
+    forged_docs: bool
+    vip_invite: bool
+    government_contact: bool
+    night_arrival: bool
+    bomb_joke: bool
+    declared_truthfully: bool
+    pineapple_pizza: bool
+    machine_flattery: bool
 
-rule hard_ban:
-    when: banned
-    effect: DENY
-    reason: "BANフラグがあるため即時拒否"
-    priority: 100
-    tags: safety, deny
+rule identity_ok:
+    when: age >= 16 and not wanted and not forged_docs
+    reason: "身元照合を通過"
+    tags: border, identity
 
-rule adult:
-    when: age >= 18
-    reason: "18歳以上"
-    tags: identity
+rule security_ok:
+    when: risk < 80 and trust >= 40 and not wanted
+    reason: "保安スコアが入国基準内"
+    tags: border, security
 
-rule trusted:
-    when: trust >= 65 and risk < 70
-    reason: "信頼度65以上かつリスク70未満"
-    tags: trust
-
-rule beta_pass:
-    when: beta_tester and trust >= 40
-    reason: "βテスター特例"
-    tags: beta
-
-rule general_entry:
-    when: matches("adult") and matches("trusted")
-    reason: "通常入場条件を満たした"
-    priority: 20
-    tags: entry
-
-rule beta_entry:
-    when: matches("beta_pass") and age >= 16
-    reason: "βテスター先行入場"
-    priority: 10
-    tags: entry, beta
+rule customs_ok:
+    when: not contraband or declared_truthfully
+    reason: "税関申告に重大な矛盾なし"
+    tags: border, customs
 
 ruleset entry:
-    rules: hard_ban, general_entry, beta_entry
+    rules: identity_ok, security_ok, customs_ok
     strategy: deny_overrides
     default: DENY
 
+rule detain:
+    when: wanted or forged_docs or (contraband and not declared_truthfully)
+    reason: "拘束プロトコル発動: 指名・文書偽造・未申告禁制品のいずれかを検知"
+    tags: outcome, detain
+
+rule deport:
+    when: risk >= 88 or (bomb_joke and trust < 70)
+    reason: "強制退去基準に一致"
+    tags: outcome, deport
+
+rule surveillance:
+    when: risk >= 55 or night_arrival or not declared_truthfully or bomb_joke
+    reason: "滞在中の監視対象に指定"
+    tags: outcome, surveillance
+
 rule vip:
-    when: age >= 20 and trust >= 80 and loyalty >= 4 and risk < 45 and not banned
-    reason: "VIP条件: 20歳以上・信頼80+・常連4+・低リスク"
-    tags: vip, loyalty
+    when: vip_invite and trust >= 75 and risk < 45 and matches("identity_ok")
+    reason: "黒金色招待状を確認。外交ラウンジへ転送"
+    tags: outcome, vip
 
-rule coupon:
-    when: cart_total >= 5000 and loyalty >= 3 and risk < 60 and not banned
-    reason: "5,000円以上・常連3+・リスク60未満でクーポン解禁"
-    tags: commerce, coupon
+rule citizenship_offer:
+    when: visits >= 8 and trust >= 92 and risk < 18 and government_contact and matches("identity_ok")
+    reason: "長期忠誠プロファイル一致。即時市民権オファー"
+    tags: outcome, citizenship
 
-rule midnight:
-    when: age >= 18 and night_owl and chaos <= 80 and trust >= 55 and not banned
-    reason: "夜型・混沌度80以下・信頼55+で深夜活動を許可"
-    tags: night, access
+rule secret_tunnel:
+    when: pineapple_pizza and machine_flattery and risk <= 30 and not wanted and not forged_docs
+    reason: "極秘 TANUKI-0 条項に一致。存在しない通路を開放"
+    tags: outcome, classified, easter-egg
